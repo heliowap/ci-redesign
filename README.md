@@ -2,17 +2,51 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Agent Skill](https://img.shields.io/badge/Agent%20Skill-User--Invoked-purple.svg)](SKILL.md)
+[![Empirical Evals](https://img.shields.io/badge/Empirical%20Evals-Demonstrated%2051.6%25-brightgreen.svg)](evals/intrador-platform-benchmark.md)
 [![Platform: Cross-Repo](https://img.shields.io/badge/Platform-Cross--Repo-success.svg)](SKILL.md)
 
-An agentic, contract-first engineering skill for Claude Code, Antigravity, OpenCode, and Cursor that guides AI agents to redesign, optimize, and secure Continuous Integration (CI) pipelines across any codebase.
+An agentic, contract-first engineering skill for **Codex**, **Claude Code**, **Devin (antigo Windsurf)**, **OpenCode**, **Cursor**, and **Antigravity** that guides AI agents to redesign, optimize, and secure Continuous Integration (CI) pipelines across any codebase.
 
 Transforms monolithic, flaky, and unprovable pipelines into targeted, verifiable, and immutable delivery engines with **guaranteed $\ge 30\%$ reductions in aggregate runner minutes and p95 candidate latency**.
 
 ---
 
+## 📈 Empirical Evals & Production Results
+
+The architecture has been proven across two independent benchmark scenarios. Detailed breakdown available in **[`evals/intrador-platform-benchmark.md`](evals/intrador-platform-benchmark.md)**:
+
+### 1. Controlled Matched Cohort (Spec #1916 / P9)
+
+Measured across five representative real-world PR workloads on the **Intrador Platform** repository:
+
+| Metric | Legacy Baseline | Redesigned Pipeline | Measured Reduction | Spec Target | Verdict |
+|---|---|---|---|---|---|
+| **Aggregate Runner Minutes** | 16.0 min | 7.75 min | **-51.56%** | $\ge 30.0\%$ | **PASS** |
+| **p95 Candidate-Ready-to-Verdict Latency** | 440.0 s | 270.0 s | **-38.64%** | $\ge 30.0\%$ | **PASS** |
+| **p95 Wall-Clock Execution Latency** | 420.0 s | 255.0 s | **-39.29%** | — | **PASS** |
+| **Runtime Cache & Dependency Overhead** | 60.0 s | 21.0 s | **-65.00%** | — | **PASS** |
+| **Pipeline Setup Overhead** | 35.0 s | 18.0 s | **-48.57%** | — | **PASS** |
+
+### 2. Live Production Deployments Across 6 Consecutive PRs
+
+Following rollout, the engine governed six consecutive production pull requests with automated zero-human-touch admissions:
+
+| PR | Branch / Feature | Scope | CI Duration | Verdict |
+|---|---|---|---|---|
+| **[#1915](https://github.com/heliowap/intrador-platform/pull/1915)** | `codex/1910-lista-canais-layout` | Hub UI / Channels layout | ~4m 30s | `CI / Verdict: SUCCESS` |
+| **[#1950](https://github.com/heliowap/intrador-platform/pull/1950)** | `docs/1894-access-contract` | Auth / Operator profile | ~4m 15s | `CI / Verdict: SUCCESS` |
+| **[#1914](https://github.com/heliowap/intrador-platform/pull/1914)** | `codex/1909-resumo-por-atendimento` | CRM Attendance summary | ~4m 45s | `CI / Verdict: SUCCESS` |
+| **[#1913](https://github.com/heliowap/intrador-platform/pull/1913)** | `codex/1710-audio-preview-range` | Audio preview / range stream | ~5m 10s | `CI / Verdict: SUCCESS` |
+| **[#1900](https://github.com/heliowap/intrador-platform/pull/1900)** | `fix/1889-agenda-channel` | Agenda channel fixes | ~4m 05s | `CI / Verdict: SUCCESS` |
+| **[#1899](https://github.com/heliowap/intrador-platform/pull/1899)** | `fix/1893-operator-phone-clear` | Operator phone clearing | **4m 21s** | `CI / Verdict: SUCCESS` |
+
+*In PR #1899, unneeded CRM middleware, scheduler, image integrity, and Playwright suites were automatically bypassed, reducing turnaround from 14+ minutes down to 4 minutes and 21 seconds.*
+
+---
+
 ## 🏛️ Core Architectural Pillars
 
-1. **Measurement Before Mutation**: Never refactor CI on gut feeling. Starts with an automated baseline of p95 wall-clock latency, total runner minutes, and failure rates across a matched cohort of representative commits.
+1. **Measurement Before Mutation**: Starts with an automated baseline of p95 wall-clock latency, total runner minutes, and failure rates across a matched cohort of representative commits.
 2. **Authority & Governance Feasibility**: Probes repository security boundaries, rulesets, and Actions App permissions before designing gate checks.
 3. **Verification Units Over Jobs**: Check obligations are modeled as logical responsibilities with declared inputs and recipes—never tied to fragile YAML job names.
 4. **Pure Complete Verdict Engine**: Non-applicability comes strictly from an evaluated verification plan, never from skipped or ignored workflow steps.
@@ -47,25 +81,63 @@ The redesign executes as a dependency-ordered task graph:
 
 ---
 
-## 🛠️ Installation
+## 🛠️ Installation Instructions
 
-### Global User Skill (Recommended)
+Choose your agent runtime below:
 
-Clone directly into your AI assistant's skills directory:
+### 1. Claude Code (`claude` CLI)
+Install to user-level skills (accessible in all projects):
+```bash
+git clone https://github.com/heliowap/ci-redesign.git ~/.claude/skills/ci-redesign
+```
+Or add a pointer to your repository's `CLAUDE.md`:
+```markdown
+- **CI Redesign**: When asked to redesign or optimize CI, follow instructions in [ci-redesign](https://github.com/heliowap/ci-redesign).
+```
 
-#### Google Antigravity / Gemini CLI:
+### 2. OpenCode (`opencode` CLI)
+Install as a user-level skill:
+```bash
+git clone https://github.com/heliowap/ci-redesign.git ~/.config/opencode/skills/ci-redesign
+```
+Or install directly in the current repository:
+```bash
+git clone https://github.com/heliowap/ci-redesign.git .opencode/skills/ci-redesign
+```
+
+### 3. Devin / Windsurf (Cascade)
+For **Devin** or **Windsurf (antigo Codeium Cascade)**:
+Install into the project's root `.windsurf/` or `.devin/` rules directory:
+```bash
+mkdir -p .windsurf/skills
+git clone https://github.com/heliowap/ci-redesign.git .windsurf/skills/ci-redesign
+```
+Or reference in `.windsurf/rules/global.md` (or `.devin/instructions.md`):
+```markdown
+When performing CI overhaul, invoke the skill documented at `.windsurf/skills/ci-redesign/SKILL.md`.
+```
+
+### 4. Codex (OpenAI Codex / ChatGPT Connector)
+For GitHub repos integrated with OpenAI Codex:
+Add the skill to the repo's agents directory:
+```bash
+git clone https://github.com/heliowap/ci-redesign.git .agents/skills/ci-redesign
+```
+And add a context pointer in `AGENTS.md`:
+```markdown
+- **Redesigning CI**: Refer to `.agents/skills/ci-redesign/SKILL.md` for verifiable pipeline redesign.
+```
+
+### 5. Google Antigravity / Gemini CLI
+Install to user skills:
 ```bash
 git clone https://github.com/heliowap/ci-redesign.git ~/.gemini/config/skills/ci-redesign
 ```
 
-#### Cursor:
+### 6. Cursor
+Install to user skills:
 ```bash
 git clone https://github.com/heliowap/ci-redesign.git ~/.cursor/skills/ci-redesign
-```
-
-#### Repository-Local Skill:
-```bash
-git clone https://github.com/heliowap/ci-redesign.git .agents/skills/ci-redesign
 ```
 
 ---
